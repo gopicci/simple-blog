@@ -1,26 +1,59 @@
 version: '3.7'
 
 services:
-  blog:
-    build: ./app
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./app/:/usr/src/app/
-    ports:
-      - 8000:8000
-    env_file:
-      - ./app/.env.dev
-    depends_on:
-      - blog-db
-
   blog-db:
+    container_name: blog-db
     image: postgres:13-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5433:5432
     environment:
       - POSTGRES_USER=blog
       - POSTGRES_PASSWORD=blog
       - POSTGRES_DB=blog_dev
 
+  blog-api:
+    container_name: blog-api
+    build: ./api
+    volumes:
+      - ./api:/usr/src/app
+      - media:/usr/src/app/media
+      - static:/usr/src/app/static
+    command: gunicorn drf_project.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - 8001:8000
+    env_file:
+      - ./api/.env.dev
+    depends_on:
+      - blog-db
+
+  blog-ui:
+    container_name: blog-ui
+    build: ./ui
+    command: npm start
+    ports:
+      - 3001:3000
+    depends_on:
+      - blog-api
+    stdin_open: true
+    volumes:
+      - ./ui:/usr/src/app
+
+  blog-nginx:
+    container_name: blog-nginx
+    build: ./nginx
+    depends_on:
+      - blog-api
+      - blog-ui
+    ports:
+      - 8080:80
+    restart: always
+    volumes:
+      - media:/usr/src/app/media
+      - static:/usr/src/app/static
+
 volumes:
   postgres_data:
+  media:
+  static:

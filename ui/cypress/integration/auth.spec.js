@@ -1,0 +1,53 @@
+const login = () => {
+  const { email, password } = Cypress.env('credentials');
+
+  // Capture HTTP requests.
+  cy.server();
+  cy.route('POST', '**/api/login/**').as('login');
+
+  // Log into the app.
+  cy.visit('/');
+  cy.get('input[name="email"]').type(email);
+  cy.get('input[name="password"]').type(password, { log: false });
+  cy.get('button').contains('Login').click();
+  cy.wait('@login');
+};
+
+describe('Authentication', function () {
+  it('Can register.', function () {
+    cy.server();
+    cy.route('POST', '**/api/register/**').as('register');
+
+    cy.visit('/register')
+    cy.get('#username').type('testuser');
+    cy.get('#email').type('testemail@email.com');
+    cy.get('#password1').type('testpassword', { log: false });
+    cy.get('#password2').type('testpassword', { log: false });
+    cy.get('button').contains('Register').click();
+    cy.wait('@register');
+    cy.location('pathname').should('eq', '/registered');
+  })
+
+  it('Can log in.', function () {
+    login();
+    cy.get('button').contains('Login').should('not.exist');
+    cy.get('button').contains('Logout').should('exist');
+  });
+
+  it('Can log out.', function () {
+    login();
+    cy.get('button').contains('Login').should('not.exist');
+    cy.get('button').contains('Logout').should('exist');
+    cy.get('button').contains('Logout').click().should(() => {
+      expect(window.localStorage.getItem('blog.auth')).to.be.null;
+    });
+    cy.get('button').contains('Login').should('exist');
+    cy.get('button').contains('Logout').should('not.exist');
+  });
+
+  it('Cannot go to register page once logged in.', function () {
+    login();
+    cy.visit('/register');
+    cy.location('pathname').should('eq', '/');
+  });
+})
