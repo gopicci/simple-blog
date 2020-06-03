@@ -5,7 +5,7 @@ function UserLogout (props) {
 
   return (
     <Container fluid className='justify-content-end'>
-      <Row >
+      <Row className='align-items-center'>
         <Col>
           {
             props.currentUser &&

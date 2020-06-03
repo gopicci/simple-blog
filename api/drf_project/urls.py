@@ -15,15 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import routers
 
 from .views import ping
-from blog.views import RegisterView, LoginView, UserView, LogoutView
+from blog.views import RegisterView, LoginView, UserView, \
+    LogoutView, BlogPostViewSet, TagsView
+
+router = routers.SimpleRouter()
+router.register(r'blog', BlogPostViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ping/', ping, name="ping"),
+    path('ping/', ping, name='ping'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/login/', LoginView.as_view(), name='login'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
     path('api/user/', UserView.as_view(), name='current-user'),
+    path('api/tags/', TagsView.as_view(), name='tags'),
+    path('api/', include(router.urls)),
 ]

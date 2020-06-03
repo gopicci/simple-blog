@@ -15,14 +15,16 @@ const login = () => {
 
 describe('Authentication', function () {
   it('Can register.', function () {
+    const { username, email, password } = Cypress.env('credentials');
+
     cy.server();
     cy.route('POST', '**/api/register/**').as('register');
 
     cy.visit('/register')
-    cy.get('#username').type('testuser');
-    cy.get('#email').type('testemail@email.com');
-    cy.get('#password1').type('testpassword', { log: false });
-    cy.get('#password2').type('testpassword', { log: false });
+    cy.get('#username').type(username);
+    cy.get('#email').type(email);
+    cy.get('#password1').type(password, { log: false });
+    cy.get('#password2').type(password, { log: false });
     cy.get('button').contains('Register').click();
     cy.wait('@register');
     cy.location('pathname').should('eq', '/registered');

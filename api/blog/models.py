@@ -1,9 +1,17 @@
+import uuid
+import itertools
+
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 
 class UserManager(BaseUserManager):
+    """
+    Defining custom user creation.
+    """
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
@@ -33,8 +41,11 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Model defining a custom user with email as identifier.
+    """
     email = models.EmailField('Email', max_length=255, unique=True)
-    username = models.CharField('Name', max_length=255, blank=False)
+    username = models.CharField('Name', max_length=255, unique=True, blank=False)
     is_staff = models.BooleanField('Is staff', default=False)
     is_active = models.BooleanField('Is active', default=True)
     joined_at = models.DateTimeField('Joined at', default=timezone.now)
@@ -44,8 +55,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    # def __str__(self):
-    #     return str(self.pk)
+    def __str__(self):
+        return self.email
 
     class Meta:
         verbose_name = 'User'
@@ -56,3 +67,54 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.username
+
+
+class BlogPost(models.Model):
+    """
+    Model representing a blog post.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    author = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, editable=False, unique=True)
+
+    tags = models.ManyToManyField('Tag', blank=True)
+
+    body = models.TextField(max_length=10000)
+
+    class Meta:
+        ordering = ['created_on']
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('blog-detail', args=[str(self.id)])
+
+    def _generate_unique_slug(self):
+        """
+        Iterating through slugs adding an int until it's unique
+        """
+        slug_candidate = slug_original = slugify(self.title, allow_unicode=True)
+        for i in itertools.count(1):
+            if not BlogPost.objects.filter(slug=slug_candidate).exists():
+                break
+            slug_candidate = f"{slug_original}-{i}"
+        self.slug = slug_candidate
+
+    def save(self, *args, **kwargs):
+        self._generate_unique_slug()
+        super().save(*args, **kwargs)
+
+
+class Tag(models.Model):
+    """
+    Model representing a post tag.
+    """
+    name = models.CharField(max_length=50, help_text='Enter a post tag')
+
+    def __str__(self):
+        return self.name

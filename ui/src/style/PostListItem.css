@@ -1,0 +1,24 @@
+.list-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-card-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-badge {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.list-card {
+  border-color: #eff1f3;
+}
+
+.list-card:hover {
+  border-color: #99b5e5;
+}

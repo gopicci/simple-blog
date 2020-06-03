@@ -48,9 +48,9 @@ function Register (props) {
       });
     };
 
-    if (isSubmitted) {
-      return <Redirect to='/registered' />
-    }
+  if (isSubmitted) {
+    return <Redirect to='/registered' />
+  }
 
   return (
     <Container className='pt-5'>

@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { Container, Navbar } from 'react-bootstrap';
+import React, { useState } from 'react';
+import {Button, Container, Navbar} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   Switch,
   Route,
   Redirect,
-  Link
-} from "react-router-dom";
+  useHistory
+} from 'react-router-dom';
+
 
 import Register from './components/Register';
 import Registered from './components/Registered';
@@ -14,7 +15,11 @@ import Login from './components/Login';
 import UserLogout from './components/UserLogout';
 import { getCookie,  getUser } from './services/AuthService'
 
-import './App.css';
+import './style/App.css';
+import PostList from './components/PostList';
+import PostDetail from './components/PostDetail';
+import Create from './components/Create';
+import EditPost from './components/EditPost'
 
 function App () {
 
@@ -25,35 +30,36 @@ function App () {
 
   const [currentUser, setCurrentUser] = useState(getUser);
 
-  const login = async (email, password) => {
-    try {
-      let csrfToken = getCookie('csrftoken');
-      fetch('api/login/', {
-        method: 'post',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({"email": email, "password": password})
-      }).then(res => res.json())
-        .then(res => {
-          if (res['is_active'] === true) {
-            window.localStorage.setItem(
-              'blog.auth', JSON.stringify(res)
-            );
-            setLoggedIn(true);
-            setCurrentUser(res);
-          } else {
-            logout();
-            console.log(res);
-          };
-        });
+  let history = useHistory();
 
-    } catch (e) {
-      console.error(e);
-    };
-  };
+  const login = async (email, password) => {
+    let csrfToken = getCookie('csrftoken');
+    fetch('api/login/', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({'email': email, 'password': password})
+    }).then(res => res.json())
+      .then(res => {
+        if (res['is_active'] === true) {
+          window.localStorage.setItem(
+            'blog.auth', JSON.stringify(res)
+          );
+          setLoggedIn(true);
+          setCurrentUser(res);
+          history.push('/');
+        } else {
+          logout();
+          console.log(res);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
 
   const logout = async () => {
@@ -70,6 +76,7 @@ function App () {
           window.localStorage.removeItem('blog.auth');
           setLoggedIn(false);
           setCurrentUser(undefined);
+          history.push('/');
         })
     } catch (e) {
       console.error(e);
@@ -84,8 +91,19 @@ function App () {
           <Navbar.Brand className='logo'>Simple blog</Navbar.Brand>
 
         </LinkContainer>
+        {
+          isLoggedIn &&
+            <LinkContainer to='/create' className='create-button'>
+              <Button
+                type='submit'
+                variant='primary'
+                size='md'
+              >Create post</Button>
+
+            </LinkContainer>
+        }
         <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse className='justify-content-end'>
           {
             !isLoggedIn &&
               <Login login={login} />
@@ -95,12 +113,19 @@ function App () {
               <UserLogout
                 logout={logout}
                 currentUser={currentUser}
-                className="justify-content-end test"
+                className='justify-content-end'
               />
           }
         </Navbar.Collapse>
       </Navbar>
       <Switch>
+          <Route path='/create' render={() => (
+            !isLoggedIn ? (
+              <Redirect to='/' />
+            ) : (
+            <Create />
+            )
+          )} />
           <Route path='/register' render={() => (
             isLoggedIn ? (
               <Redirect to='/' />
@@ -114,6 +139,15 @@ function App () {
             ) : (
             <Registered />
             )
+          )} />
+          <Route path='/:slug/edit' render={(match) => (
+            <EditPost {...match}/>
+          )} />
+          <Route path='/:slug' render={(match) => (
+            <PostDetail {...match} />
+          )} />
+          <Route path='/' render={() => (
+            <PostList />
           )} />
       </Switch>
     </>

@@ -1,7 +1,9 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.encoding import smart_text
 from rest_framework import serializers
 
-from .models import CustomUser
+from .models import CustomUser, BlogPost, Tag
 from .validators import validate_username
 
 
@@ -60,3 +62,49 @@ class UserSerializer(serializers.ModelSerializer):
         data['password'] = validated_data['password1']
         user = self.Meta.model.objects.create_user(**data)
         return user
+
+
+class CreatableSlugRelatedField(serializers.SlugRelatedField):
+
+    def to_internal_value(self, data):
+        try:
+            return self.get_queryset().get_or_create(**{self.slug_field: data})[0]
+        except ObjectDoesNotExist:
+            self.fail('does_not_exist', slug_name=self.slug_field, value=smart_text(data))
+        except (TypeError, ValueError):
+            self.fail('invalid')
+
+
+class BlogPostSerializer(serializers.ModelSerializer):
+
+    tags = CreatableSlugRelatedField(queryset=Tag.objects.all(),
+                                     many=True,
+                                     slug_field='name',
+                                     )
+    author = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = BlogPost
+        fields = (
+            'id',
+            'author',
+            'title',
+            'tags',
+            'body',
+            'slug',
+            'created_on',
+            'updated_on',
+        )
+        read_only_fields = (
+            'id',
+            'author',
+            'slug',
+            'created_on',
+            'updated_on',
+        )
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
