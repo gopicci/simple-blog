@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Button, Card, Container, Col, Row
+  Badge, Button, Container, Col, Row
 } from 'react-bootstrap';
 import DOMPurify from 'dompurify';
 
 import { dateBuilder } from '../services/DateService';
-import { getUser } from '../services/AuthService';
 import {LinkContainer} from 'react-router-bootstrap';
 
+import '../style/PostDetail.css'
 
-function PostDetail ({ match }) {
+
+function PostDetail ({ match, currentUser }) {
 
   const [postDetail, setPostDetail] = useState({});
 
@@ -17,21 +18,22 @@ function PostDetail ({ match }) {
 
   const [isAuthor, setIsAuthor] = useState(false);
 
+  const [tagList, setTagList] = useState([])
+
   useEffect(() => {
     fetch(`/api/blog/${match.params.slug}`)
       .then(res => res.json())
       .then(res => {
         setPostDetail(res);
         setDateString(dateBuilder(res['author'], res['created_on'], res['updated_on']));
-        if (getUser().username == res['author'])
+        setTagList(res['tags'].map(tag => <Badge key={tag} className='list-badge badge badge-primary'>{tag}</Badge>))
+        if (currentUser && currentUser['username'] === res['author'])
           setIsAuthor(true)
-        console.log(res);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   },[match.slug])
-
 
   const editLink = `/${match.params.slug}/edit`
 
@@ -40,7 +42,7 @@ function PostDetail ({ match }) {
 
         <Col lg={12}>
           <Row className='align-items-center'>
-            <Col><h1>{postDetail['title']}</h1></Col>
+            <Col><h1 className='postTitle'>{postDetail['title']}</h1></Col>
             {
               isAuthor &&
               <Col>
@@ -55,8 +57,10 @@ function PostDetail ({ match }) {
           <Row>
             <Col><p className='text-muted'>{dateString}</p></Col>
           </Row>
-
-          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postDetail['body'])}} />
+          <Row>
+            <Col><p className='text-muted'>Tags: {tagList}</p></Col>
+          </Row>
+          <div className='postBody' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postDetail['body'])}} />
         </Col>
 
     </Container>

@@ -5,6 +5,11 @@
       "username": "Mark",
       "email": "mark@mark.com",
       "password": "markpassword"
+    },
+    "credentials2": {
+      "username": "John",
+      "email": "john@john.com",
+      "password": "johnpassword"
     }
   }
 }

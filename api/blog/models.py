@@ -99,10 +99,15 @@ class BlogPost(models.Model):
         Iterating through slugs adding an int until it's unique
         """
         slug_candidate = slug_original = slugify(self.title, allow_unicode=True)
+
+        if slug_candidate == self.slug:
+            return
+
         for i in itertools.count(1):
             if not BlogPost.objects.filter(slug=slug_candidate).exists():
                 break
             slug_candidate = f"{slug_original}-{i}"
+
         self.slug = slug_candidate
 
     def save(self, *args, **kwargs):

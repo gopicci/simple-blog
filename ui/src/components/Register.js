@@ -30,7 +30,6 @@ function Register (props) {
       }).then((res) => res.json().then(data => ({ok: res.ok, body: data})))
         .then((response) => {
         if (!response.ok) {
-            console.log(response);
             for (const value in response.body) {
               if (value === 'non_field_errors') {
                 actions.setFieldError('password2', response.body[value].join(' '));
@@ -44,7 +43,7 @@ function Register (props) {
           setSubmitted(true);
       }).catch((error) => {
           actions.setSubmitting(false);
-          console.log(error);
+          console.error(error);
       });
     };
 

@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
-import {getCookie} from '../services/AuthService';
+import {getCookie, getUser} from '../services/AuthService';
 import RichEditor from './RichEditor';
 import TagInput from './TagInput';
 
@@ -22,8 +22,6 @@ function Create () {
       tags: values.tags
     }
 
-    console.log(data)
-
     let csrfToken = getCookie('csrftoken');
     fetch('api/blog/', {
       method: 'post',
@@ -36,7 +34,6 @@ function Create () {
       }).then((res) => res.json().then(data => ({ok: res.ok, body: data})))
         .then((res) => {
         if (!res.ok) {
-            console.log(res);
             for (const value in res.body) {
               actions.setFieldError(value, res.body[value].join(' '));
             }
@@ -48,7 +45,7 @@ function Create () {
           setSubmitted(true);
       }).catch((error) => {
           actions.setSubmitting(false);
-          console.log(error);
+          console.error(error);
       });
     };
 

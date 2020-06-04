@@ -16,9 +16,15 @@ export const getCookie = (name) => {
 };
 
 export const getUser = () => {
-  const auth = JSON.parse(window.localStorage.getItem('blog.auth'));
-  if (auth) {
-    return auth;
-  }
-  return undefined;
-};
+  return fetch('/api/user')
+    .then((res) => res.json().then(data => ({ok: res.ok, body: data})))
+    .then((res) => {
+      if (res.ok) {
+       return  res.body;
+      }
+      return null;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  };

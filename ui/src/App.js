@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Button, Container, Navbar} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
@@ -21,14 +21,9 @@ import PostDetail from './components/PostDetail';
 import Create from './components/Create';
 import EditPost from './components/EditPost'
 
-function App () {
+function App ({user}) {
 
-  const [isLoggedIn, setLoggedIn] = useState(() => {
-      return window.localStorage.getItem('blog.auth') !== null;
-    }
-  );
-
-  const [currentUser, setCurrentUser] = useState(getUser);
+  const [currentUser, setCurrentUser] = useState(user)
 
   let history = useHistory();
 
@@ -45,19 +40,14 @@ function App () {
     }).then(res => res.json())
       .then(res => {
         if (res['is_active'] === true) {
-          window.localStorage.setItem(
-            'blog.auth', JSON.stringify(res)
-          );
-          setLoggedIn(true);
           setCurrentUser(res);
           history.push('/');
         } else {
           logout();
-          console.log(res);
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -73,16 +63,13 @@ function App () {
           'X-CSRFToken': csrfToken
         }
       }).then(() => {
-          window.localStorage.removeItem('blog.auth');
-          setLoggedIn(false);
-          setCurrentUser(undefined);
+          setCurrentUser(null);
           history.push('/');
         })
     } catch (e) {
       console.error(e);
     };
   };
-
 
   return (
     <>
@@ -92,7 +79,7 @@ function App () {
 
         </LinkContainer>
         {
-          isLoggedIn &&
+          currentUser &&
             <LinkContainer to='/create' className='create-button'>
               <Button
                 type='submit'
@@ -105,11 +92,11 @@ function App () {
         <Navbar.Toggle />
         <Navbar.Collapse className='justify-content-end'>
           {
-            !isLoggedIn &&
+            !currentUser &&
               <Login login={login} />
           }
           {
-            isLoggedIn &&
+            currentUser &&
               <UserLogout
                 logout={logout}
                 currentUser={currentUser}
@@ -120,31 +107,35 @@ function App () {
       </Navbar>
       <Switch>
           <Route path='/create' render={() => (
-            !isLoggedIn ? (
+            !currentUser ? (
               <Redirect to='/' />
             ) : (
             <Create />
             )
           )} />
           <Route path='/register' render={() => (
-            isLoggedIn ? (
+            currentUser ? (
               <Redirect to='/' />
             ) : (
             <Register />
             )
           )} />
           <Route path='/registered' render={() => (
-            isLoggedIn ? (
+            currentUser ? (
               <Redirect to='/' />
             ) : (
             <Registered />
             )
           )} />
           <Route path='/:slug/edit' render={(match) => (
-            <EditPost {...match}/>
+            !currentUser ? (
+              <Redirect to='/' />
+            ) : (
+            <EditPost {...match} currentUser={currentUser}/>
+            )
           )} />
           <Route path='/:slug' render={(match) => (
-            <PostDetail {...match} />
+            <PostDetail {...match} currentUser={currentUser}/>
           )} />
           <Route path='/' render={() => (
             <PostList />

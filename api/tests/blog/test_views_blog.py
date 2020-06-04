@@ -57,6 +57,6 @@ def test_anon_can_view_post(client):
         content_type='application/json',
     )
     resp = client.get(
-        f'/api/blog/{resp3.data["id"]}/'
+        f'/api/blog/{resp3.data["slug"]}/'
     )
     assert resp.status_code == 200

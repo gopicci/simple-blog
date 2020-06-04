@@ -15,20 +15,17 @@ function PostList (props) {
       .then(res => res.json())
       .then(res => {
         setPostList(res)
-        console.log(res)
         return res
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   },[])
 
   let cardList;
   let listBody;
 
-  if (postList.length === 0) {
-    console.log('no posts')
-  } else {
+  if (postList.length !== 0) {
     cardList = postList.map(post =>
       <PostListItem
         author={post.author}
