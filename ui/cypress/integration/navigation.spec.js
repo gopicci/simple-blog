@@ -4,4 +4,9 @@ describe('Navigation', function () {
     cy.get('a').contains('Register').click();
     cy.location('pathname').should('eq', '/register');
   });
+
+  it('Cannot visit create page if not logged in.', function () {
+    cy.visit('/create');
+    cy.location('pathname').should('eq', '/');
+  });
 });

@@ -2,14 +2,14 @@
   "baseUrl": "http://localhost:8080",
   "env": {
     "credentials": {
-      "username": "Mark",
-      "email": "mark@mark.com",
-      "password": "markpassword"
+      "username": "Test user 1",
+      "email": "testuser1@testmail.com",
+      "password": "pAssw0rd!"
     },
     "credentials2": {
-      "username": "John",
-      "email": "john@john.com",
-      "password": "johnpassword"
+      "username": "Test user 2",
+      "email": "testuser2@testmail.com",
+      "password": "pAssw0rd!"
     }
   }
 }
