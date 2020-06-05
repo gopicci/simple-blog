@@ -19,7 +19,7 @@ from rest_framework import routers
 
 from .views import ping
 from blog.views import RegisterView, LoginView, UserView, \
-    LogoutView, BlogPostViewSet, TagsView
+    LogoutView, BlogPostViewSet, TagsView, CommentsView
 
 router = routers.SimpleRouter()
 router.register(r'blog', BlogPostViewSet)
@@ -33,4 +33,5 @@ urlpatterns = [
     path('api/user/', UserView.as_view(), name='current-user'),
     path('api/tags/', TagsView.as_view(), name='tags'),
     path('api/', include(router.urls)),
+    path('api/blog/<slug:slug>/comments/', CommentsView.as_view(), name='comments'),
 ]

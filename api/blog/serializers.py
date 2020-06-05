@@ -3,12 +3,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import smart_text
 from rest_framework import serializers
 
-from .models import CustomUser, BlogPost, Tag
+from .models import CustomUser, BlogPost, Tag, Comment
 from .validators import validate_username
 
 
 class LoginSerializer(serializers.Serializer):
-
+    """
+    Login serializer, validates email and password.
+    """
     email = serializers.EmailField()
     password = serializers.CharField()
 
@@ -22,7 +24,9 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
+    """
+    Custom user serializer, validates that both password match on creation.
+    """
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
@@ -65,7 +69,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CreatableSlugRelatedField(serializers.SlugRelatedField):
-
+    """
+    Defines a creatable slug related field for tags.
+    """
     def to_internal_value(self, data):
         try:
             return self.get_queryset().get_or_create(**{self.slug_field: data})[0]
@@ -76,7 +82,9 @@ class CreatableSlugRelatedField(serializers.SlugRelatedField):
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
-
+    """
+    Blog post serializer. View sends user from request.
+    """
     tags = CreatableSlugRelatedField(queryset=Tag.objects.all(),
                                      many=True,
                                      slug_field='name',
@@ -105,6 +113,27 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    """
+    Tag serializer.
+    """
     class Meta:
         model = Tag
         fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    Comment serializer. View sends author from request, post from url slug.
+    """
+    author = serializers.ReadOnlyField(source='author.username')
+    post = serializers.ReadOnlyField(source='post.slug')
+
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = (
+            'id',
+            'created_on',
+            'author',
+            'post',
+        )

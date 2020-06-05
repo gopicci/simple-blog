@@ -83,7 +83,7 @@ class BlogPost(models.Model):
 
     tags = models.ManyToManyField('Tag', blank=True)
 
-    body = models.TextField(max_length=10000)
+    body = models.TextField(max_length=100000)
 
     class Meta:
         ordering = ['created_on']
@@ -123,3 +123,16 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Comment(models.Model):
+    """
+    Model representing a comment.
+    """
+    post = models.ForeignKey(BlogPost, on_delete=models.SET_NULL, null=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    body = models.TextField(max_length=10000)
+
+    class Meta:
+        ordering = ['-created_on']
