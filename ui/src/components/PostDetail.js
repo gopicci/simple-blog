@@ -79,7 +79,10 @@ function PostDetail ({ match, currentUser }) {
           </Row>
           <Row>
             <Col>
-              <CommentForm match={match} newComment={newComment} postedNewComment={postedNewComment} />
+              {
+              currentUser &&
+              <CommentForm match={match} newComment={newComment} postedNewComment={postedNewComment}/>
+              }
             </Col>
           </Row>
         </Col>

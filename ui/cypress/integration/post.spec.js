@@ -77,4 +77,22 @@ describe('Blogging', function () {
 
   })
 
+  it ('Can post comments.', function(){
+    login();
+
+    cy.server();
+    cy.route('POST', '**/api/blog/post-title/comments**').as('post');
+
+    cy.visit('/post-title');
+    cy.get('#body').type('test comment');
+    cy.get('button').contains('Post').click();
+    cy.wait('@post');
+    cy.get('.commentBody').contains('test comment');
+  })
+
+  it ('Cannot post comments if not logged in.', function(){
+    cy.visit('/post-title');
+    cy.get('#body').should('not.exist');
+  })
+
 })
