@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Card, Container, Col, Row
+  Container, Col, Row
 } from 'react-bootstrap';
 
 import PostListItem from './PostListItem';
@@ -15,7 +15,6 @@ function PostList (props) {
       .then(res => res.json())
       .then(res => {
         setPostList(res)
-        return res
       })
       .catch((error) => {
         console.error(error);

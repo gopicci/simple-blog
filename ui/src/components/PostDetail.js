@@ -3,9 +3,12 @@ import {
   Badge, Button, Container, Col, Row
 } from 'react-bootstrap';
 import DOMPurify from 'dompurify';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import { dateBuilder } from '../services/DateService';
-import {LinkContainer} from 'react-router-bootstrap';
+import CommentList from './CommentList'
+import CommentForm from './CommentForm'
+
 
 import '../style/PostDetail.css'
 
@@ -19,6 +22,12 @@ function PostDetail ({ match, currentUser }) {
   const [isAuthor, setIsAuthor] = useState(false);
 
   const [tagList, setTagList] = useState([])
+
+  const [newComment, setNewComment] = useState(false)
+
+  const postedNewComment = (bool) => {
+    setNewComment(bool);
+  }
 
   useEffect(() => {
     fetch(`/api/blog/${match.params.slug}`)
@@ -60,7 +69,19 @@ function PostDetail ({ match, currentUser }) {
           <Row>
             <Col><p className='text-muted'>Tags: {tagList}</p></Col>
           </Row>
-          <div className='postBody' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postDetail['body'])}} />
+          <Row>
+            <Col><div className='postBody' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(postDetail['body'])}} /></Col>
+          </Row>
+          <Row className='comments'>
+            <Col>
+              <CommentList match={match} newComment={newComment} postedNewComment={postedNewComment} />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <CommentForm match={match} newComment={newComment} postedNewComment={postedNewComment} />
+            </Col>
+          </Row>
         </Col>
 
     </Container>

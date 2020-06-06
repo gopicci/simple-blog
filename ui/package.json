@@ -9,6 +9,7 @@
     "bootstrap": "^4.5.0",
     "bootswatch": "^4.5.0",
     "dompurify": "^2.0.11",
+    "fast-html-parser": "^1.0.1",
     "formik": "^2.1.4",
     "jquery": "^3.5.1",
     "react": "^16.13.1",

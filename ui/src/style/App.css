@@ -30,7 +30,7 @@
 }
 
 .ql-editor{
-    min-height:200px;
+  min-height:200px;
 }
 
 .form-control {
@@ -41,4 +41,9 @@
 .form-control:focus {
   -webkit-box-shadow: none;
           box-shadow: none;
+}
+
+.commentBody {
+  white-space: pre-line;
+  white-space: pre-wrap;
 }
