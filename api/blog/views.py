@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
 from rest_framework import views, viewsets, generics, response, permissions, authentication
-from .serializers import UserSerializer, LoginSerializer, BlogPostSerializer, TagSerializer, CommentSerializer
+from .serializers import UserSerializer, LoginSerializer, BlogPostSerializer,\
+    TagSerializer, CommentSerializer, ImageSerializer
 from .models import BlogPost, Tag, Comment
 
 
@@ -107,3 +108,8 @@ class CommentsView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
         serializer.save(post=BlogPost.objects.get(slug=self.kwargs['slug']))
+
+
+class ImageView(generics.CreateAPIView):
+    serializer_class = ImageSerializer
+    permission_classes = (permissions.IsAuthenticated, )

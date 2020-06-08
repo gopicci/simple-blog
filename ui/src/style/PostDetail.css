@@ -6,3 +6,8 @@
     margin-top: 50px;
     margin-bottom: 50px;
 }
+
+.postBody img {
+    max-height: 100%;
+    max-width: 100%;
+}

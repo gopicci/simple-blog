@@ -1,5 +1,5 @@
 import pytest
-from blog.models import BlogPost, CustomUser, Comment
+from blog.models import BlogPost, CustomUser, Comment, ImageModel
 
 
 @pytest.mark.django_db
@@ -154,3 +154,63 @@ def test_anon_can_view_comments(client):
     )
     assert resp.status_code == 200
     assert resp.data[0]['body'] == 'test comment'
+
+
+@pytest.mark.django_db
+def test_can_upload_image(client):
+    images = ImageModel.objects.all()
+    assert len(images) == 0
+
+    resp1 = client.post(
+        '/api/register/',
+        {'username': 'test', 'email': 'test@test.com', 'password1': 'pAzzw0rd!', 'password2': 'pAzzw0rd!', },
+        content_type='application/json',
+    )
+    resp2 = client.post(
+        '/api/login/',
+        {'email': 'test@test.com', 'password': 'pAzzw0rd!', },
+        content_type='application/json',
+    )
+    resp = client.post(
+        '/api/image/',
+        {'image': open('tests/blog/media/image_small.jpg', 'rb')},
+    )
+
+    assert resp.status_code == 201
+    images = ImageModel.objects.all()
+    assert len(images) == 1
+
+
+@pytest.mark.django_db
+def test_keep_one_image_when_resizing(client):
+    images = ImageModel.objects.all()
+    assert len(images) == 0
+
+    resp1 = client.post(
+        '/api/register/',
+        {'username': 'test', 'email': 'test@test.com', 'password1': 'pAzzw0rd!', 'password2': 'pAzzw0rd!', },
+        content_type='application/json',
+    )
+    resp2 = client.post(
+        '/api/login/',
+        {'email': 'test@test.com', 'password': 'pAzzw0rd!', },
+        content_type='application/json',
+    )
+    resp = client.post(
+        '/api/image/',
+        {'image': open('tests/blog/media/image_big.jpg', 'rb')},
+    )
+
+    assert resp.status_code == 201
+    images = ImageModel.objects.all()
+    assert len(images) == 1
+
+
+@pytest.mark.django_db
+def test_anon_cannot_upload_image(client):
+    resp = client.post(
+        '/api/image/',
+        {'image': 'media/image_small.jpg'},
+        content_type='application/json',
+    )
+    assert resp.status_code == 403

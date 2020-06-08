@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
-import {getCookie, getUser} from '../services/AuthService';
+import { getCookie } from '../services/AuthService';
 import RichEditor from './RichEditor';
 import TagInput from './TagInput';
 

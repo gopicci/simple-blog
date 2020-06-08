@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.encoding import smart_text
 from rest_framework import serializers
 
-from .models import CustomUser, BlogPost, Tag, Comment
+from .models import CustomUser, BlogPost, Tag, Comment, ImageModel
 from .validators import validate_username
 
 
@@ -136,4 +136,12 @@ class CommentSerializer(serializers.ModelSerializer):
             'created_on',
             'author',
             'post',
+        )
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageModel
+        fields = (
+            'image',
         )
