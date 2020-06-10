@@ -1,55 +1,42 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Container, Col, Row
-} from 'react-bootstrap';
+import React, { useEffect, useState } from "react";
+import { Container, Col, Row } from "react-bootstrap";
 
-import PostListItem from './PostListItem';
+import PostListItem from "./PostListItem";
 
-
-function PostList (props) {
-
+/**
+ * Builds a list of card components with blog post info
+ */
+function PostList() {
   const [postList, setPostList] = useState([]);
 
   useEffect(() => {
-    fetch('api/blog/')
-      .then(res => res.json())
-      .then(res => {
-        setPostList(res)
+    fetch("api/blog/")
+      .then((res) => res.json())
+      .then((res) => {
+        setPostList(res);
       })
       .catch((error) => {
         console.error(error);
       });
-  },[])
+  }, []);
 
   let cardList;
   let listBody;
 
   if (postList.length !== 0) {
-    cardList = postList.map(post =>
-      <PostListItem
-        author={post.author}
-        title={post.title}
-        slug={post.slug}
-        body={post.body}
-        key={post.id}
-        tags={post.tags}
-        created={post.created_on}
-        updated={post.updated_on}
-      />
-    )
-    listBody = <ul className='list-unstyled mb-0'>{cardList}</ul>
+    cardList = postList.map((post) => (
+      <PostListItem post={post} key={post.id} />
+    ));
+    listBody = <ul className="list-unstyled mb-0">{cardList}</ul>;
   }
 
   return (
-    <Container className='pt-5'>
+    <Container className="pt-5">
       <Row>
-        <Col lg={12}>
-          {listBody}
-        </Col>
+        <Col lg={12}>{listBody}</Col>
       </Row>
     </Container>
-  )
-
+  );
 }
 
 export default PostList;

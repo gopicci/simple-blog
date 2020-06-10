@@ -13,26 +13,34 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from blog.views import (
+    BlogPostViewSet,
+    CommentsView,
+    ImageView,
+    LoginView,
+    LogoutView,
+    RegisterView,
+    TagsView,
+    UserView,
+)
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework import routers
 
 from .views import ping
-from blog.views import RegisterView, LoginView, UserView, \
-    LogoutView, BlogPostViewSet, TagsView, CommentsView, ImageView
 
 router = routers.SimpleRouter()
-router.register(r'blog', BlogPostViewSet)
+router.register(r"blog", BlogPostViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('ping/', ping, name='ping'),
-    path('api/register/', RegisterView.as_view(), name='register'),
-    path('api/login/', LoginView.as_view(), name='login'),
-    path('api/logout/', LogoutView.as_view(), name='logout'),
-    path('api/user/', UserView.as_view(), name='current-user'),
-    path('api/tags/', TagsView.as_view(), name='tags'),
-    path('api/', include(router.urls)),
-    path('api/blog/<slug:slug>/comments/', CommentsView.as_view(), name='comments'),
-    path('api/image/', ImageView.as_view(), name='image')
+    path("admin/", admin.site.urls),
+    path("ping/", ping, name="ping"),
+    path("api/register/", RegisterView.as_view(), name="register"),
+    path("api/login/", LoginView.as_view(), name="login"),
+    path("api/logout/", LogoutView.as_view(), name="logout"),
+    path("api/user/", UserView.as_view(), name="current-user"),
+    path("api/tags/", TagsView.as_view(), name="tags"),
+    path("api/", include(router.urls)),
+    path("api/blog/<slug:slug>/comments/", CommentsView.as_view(), name="comments"),
+    path("api/image/", ImageView.as_view(), name="image"),
 ]

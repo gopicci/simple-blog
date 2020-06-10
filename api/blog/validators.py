@@ -7,6 +7,10 @@ def validate_username(username):
     """
     from .models import CustomUser
 
-    if CustomUser.objects.filter(**{'{}__iexact'.format(CustomUser.USERNAME_FIELD): username}).exists():
-        raise ValidationError('User with this {} already exists'.format(CustomUser.USERNAME_FIELD))
+    if CustomUser.objects.filter(
+        **{"{}__iexact".format(CustomUser.USERNAME_FIELD): username}
+    ).exists():
+        raise ValidationError(
+            "User with this {} already exists".format(CustomUser.USERNAME_FIELD)
+        )
     return username

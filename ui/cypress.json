@@ -10,6 +10,18 @@
       "username": "Test user 2",
       "email": "testuser2@testmail.com",
       "password": "pAssw0rd!"
+    },
+    "post": {
+      "title": "Test post title!",
+      "slug": "test-post-title",
+      "tag": "test tag",
+      "body": "Test post body"
+    },
+    "post-edit": {
+      "title": "Test post title?",
+      "slug": "test-post-title",
+      "tag": "test tag edit",
+      "body": "Test post body edit"
     }
   }
 }

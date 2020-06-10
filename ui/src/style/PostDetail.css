@@ -1,13 +1,13 @@
 .postBody {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .comments {
-    margin-top: 50px;
-    margin-bottom: 50px;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .postBody img {
-    max-height: 100%;
-    max-width: 100%;
+  max-height: 100%;
+  max-width: 100%;
 }

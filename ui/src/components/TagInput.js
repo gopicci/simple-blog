@@ -1,68 +1,69 @@
-import React, {useEffect, useState} from 'react';
-import '../style/TagInput.css';
-import { WithContext as ReactTags } from 'react-tag-input';
+import React, { useEffect, useRef, useState } from "react";
+import { WithContext as ReactTags } from "react-tag-input";
 
+import "../style/TagInput.css";
 
-function TagInput ({...form}) {
-
+/**
+ *
+ * Built around react-tag-input module to deal with post edit form tags field
+ *
+ * @param form
+ */
+function TagInput({ ...form }) {
   const [state, setState] = useState({
     tags: [],
-    suggestions: []
+    suggestions: [],
   });
 
+  // Grabs all tags from API and adds them as suggestions on mount
   useEffect(() => {
-    // Grabs all tags from api and adds to suggestions when state is []
-    fetch('/api/tags/')
-      .then(res => res.json())
-      .then(res => {
-        let data = res.map(tag => {
-          let suggestion = {id: String(tag['id']), text: tag['name']}
-          return suggestion
+    fetch("/api/tags/")
+      .then((res) => res.json())
+      .then((res) => {
+        let data = res.map((tag) => {
+          return { id: String(tag["id"]), text: tag["name"] };
         });
-        setState({tags: state.tags, suggestions: data})
-        return res
+        setState({ tags: [], suggestions: data });
       })
       .catch((error) => {
         console.error(error);
       });
-  },[])
+  }, []);
 
+  // Updates form field value on state change
+  const latestForm = useRef(form);
   useEffect(() => {
-    // Updates form field value on state change
-    const namesList = state.tags.map(tag => tag.text)
-    form.setFieldValue('tags', namesList, false)
-  }, [state])
+    const namesList = state.tags.map((tag) => tag.text);
+    latestForm.current.setFieldValue("tags", namesList, false);
+  }, [state]);
 
-
+  // When editing a post sets the post tags as form initial values
   useEffect(() => {
-    // Sets initial tags on editing form
-    let initialTags = form.initialValues.tags.map(tag => {
-      let tags = {id: tag, text: tag}
-      return tags
+    let initialTags = form.initialValues.tags.map((tag) => {
+      return { id: tag, text: tag };
     });
-    setState({tags: initialTags, suggestions: state.suggestions})
-  }, [form.initialValues.tags])
+    setState({ tags: initialTags, suggestions: state.suggestions });
+  }, [form.initialValues.tags, state.suggestions]);
 
-
+  // Module required, handle tag delete
   function handleDelete(i) {
-    // Package required delete
     const { tags } = state;
     setState({
-     tags: tags.filter((tag, index) => index !== i),
-     suggestions: state.suggestions
+      tags: tags.filter((tag, index) => index !== i),
+      suggestions: state.suggestions,
     });
   }
 
+  // Module required, handle tag addition
   function handleAddition(tag) {
-    // Package required add
-    setState(state => ({
+    setState((state) => ({
       tags: [...state.tags, tag],
-      suggestions: state.suggestions
+      suggestions: state.suggestions,
     }));
   }
 
+  // Module tag drag handler
   function handleDrag(tag, currPos, newPos) {
-    // Package drag
     const tags = [...state.tags];
     const newTags = tags.slice();
 
@@ -71,7 +72,7 @@ function TagInput ({...form}) {
 
     setState({
       tags: newTags,
-      suggestions: state.suggestions
+      suggestions: state.suggestions,
     });
   }
 
@@ -82,10 +83,10 @@ function TagInput ({...form}) {
       handleDelete={handleDelete}
       handleAddition={handleAddition}
       handleDrag={handleDrag}
-      placeholder=''
+      placeholder=""
       autofocus={false}
     />
-  )
-};
+  );
+}
 
 export default TagInput;
