@@ -1,6 +1,4 @@
-image:
-  name: docker/compose:1.26.0
-  entrypoint: [""]
+image: docker/compose:1.26.0
 
 stages:
   - build
@@ -13,7 +11,6 @@ build:
   stage: build
   services:
     - docker:dind
-      command: ["--insecure-registry=gitlab.MYDOMAIN:PORT"]
 
   variables:
     DOCKER_DRIVER: overlay2
