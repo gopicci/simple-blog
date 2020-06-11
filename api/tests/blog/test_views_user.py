@@ -91,7 +91,6 @@ def test_can_login(client):
 
     users = CustomUser.objects.all()
     assert len(users) == 1
-
     resp = client.post(
         "/api/login/",
         {"email": "test@test.com", "password": "pAzzw0rd!"},

@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-import dj_database_url
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django.contrib.staticfiles",
     "rest_framework",
+    "storages",
+    "drf_yasg",
     "blog",
 ]
 
@@ -89,11 +89,6 @@ DATABASES = {
     }
 }
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-db_from_env = dj_database_url.config(default=DATABASE_URL, conn_max_age=500)
-DATABASES["default"].update(db_from_env)
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -124,13 +119,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = "/staticfiles/"
+USE_S3 = os.getenv("USE_S3") == "TRUE"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+if USE_S3:
+    # aws settings
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_DEFAULT_ACL = None
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    # s3 static settings
+    STATIC_LOCATION = "static"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATICFILES_STORAGE = "drf_project.storage_backends.StaticStorage"
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = "media"
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
+    DEFAULT_FILE_STORAGE = "drf_project.storage_backends.PublicMediaStorage"
+else:
+    STATIC_URL = "/staticfiles/"
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-MEDIA_URL = "/media/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 AUTH_USER_MODEL = "blog.CustomUser"
 
@@ -138,4 +152,10 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
     )
+}
+
+SWAGGER_SETTINGS = {
+    "USE_SESSION_AUTH": True,
+    "LOGIN_URL": "/api/login",
+    "LOGOUT_URL": "/api/logout",
 }

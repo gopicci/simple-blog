@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import (
     authentication,
     generics,
@@ -29,6 +31,15 @@ class LoginView(views.APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = (authentication.SessionAuthentication,)
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "email": openapi.Schema(type=openapi.TYPE_STRING),
+                "password": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+    )
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

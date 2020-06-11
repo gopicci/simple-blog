@@ -12,7 +12,7 @@ function Registered() {
           <Card className="mb-3 text-center">
             <Card.Body>
               <h5>Registration successful</h5>
-              <p>You can now login.</p>
+              <p>Your user needs to be activated before you can login</p>
             </Card.Body>
           </Card>
         </Col>

@@ -5,8 +5,8 @@ WORKDIR /usr/src/app
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-COPY package.json /usr/src/app/package.json
-COPY package-lock.json /usr/src/app/package-lock.json
+COPY package.json ./package.json
+COPY package-lock.json ./package-lock.json
 RUN npm install --production
 
-COPY . /usr/src/app
+COPY . .
