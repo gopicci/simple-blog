@@ -14,14 +14,3 @@ services:
     env_file:
       - ./api/.env
 
-  blog-nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.prod
-      cache_from:
-        - "${NGINX_IMAGE}"
-    image: "${NGINX_IMAGE}"
-    ports:
-      - 80:80
-    depends_on:
-      - blog-api
