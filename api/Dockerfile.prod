@@ -43,11 +43,11 @@ COPY --from=builder /usr/src/app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
-COPY . /usr/src/app/
+COPY ./entrypoint.prod.sh /usr/src/app/entrypoint.prod.sh
 
-RUN python manage.py collectstatic --noinput
+COPY . /usr/src/app/
 
 RUN adduser -D simpleblog
 USER simpleblog
 
-CMD gunicorn drf_project.wsgi:application --bind 0.0.0.0:$PORT
+ENTRYPOINT ["/usr/src/app/entrypoint.prod.sh"]
