@@ -12,4 +12,6 @@ services:
     expose:
       - 8000
     env_file:
-      - ./.env.prod
+      - .env
+    environment:
+      - SECRET_KEY: $SECRET_KEY
