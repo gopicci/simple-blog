@@ -9,13 +9,9 @@ services:
         - "${API_IMAGE}"
     image: "${API_IMAGE}"
     command: gunicorn drf_project.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - static_volume:/usr/src/app/staticfiles
-      - media_volume:/usr/src/app/mediafiles
     expose:
       - 8000
-    env_file: .env
-
-volumes:
-  static_volume:
-  media_volume:
+    env_file:
+      - .env
+    environment:
+      - SECRET_KEY: ${SECRET_KEY}
