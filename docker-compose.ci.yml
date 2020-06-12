@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile.prod
       cache_from:
         - "${API_IMAGE}"
+      args:
+        SECRET_KEY: $SECRET_KEY
     image: "${API_IMAGE}"
     command: gunicorn drf_project.wsgi:application --bind 0.0.0.0:8000
     expose:
