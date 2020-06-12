@@ -1,0 +1,14 @@
+DEBUG=0
+SECRET_KEY=l8REPxHL4GRJNQ3ZJM4elhjdEAykeFNCnH3j0G2@cvYQl4Txk1IuwLJzReJAetAiNAELeP
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *.amazon.com
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE=simple_blog
+SQL_USER=simple_blog
+SQL_PASSWORD=Bk3j7WXHA6TLYetamXYb
+SQL_HOST=simple-blog-db.chp0ojbsyqvi.us-west-2.rds.amazonaws.com
+SQL_PORT=5432
+DATABASE=postgres
+USE_S3=TRUE
+AWS_ACCESS_KEY_ID=AKIAXWNFBFAGDCSSJ452
+AWS_SECRET_ACCESS_KEY=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
+AWS_STORAGE_BUCKET_NAME=gopicci-simple-blog
