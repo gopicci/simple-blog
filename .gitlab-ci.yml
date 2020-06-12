@@ -22,10 +22,9 @@ test:
     POSTGRES_PASSWORD: runner
     DATABASE_TEST_URL: postgres://runner:runner@postgres:5432/users
   script:
-    - cd app
     - python3.8 -m venv env
     - source env/bin/activate
-    - pip install -r requirements.txt
+    - pip install -r /usr/src/app/requirements.txt
     - pip install flake8 isort pytest pytest-django
     - export DEBUG=1
     - pytest -p no:warnings
