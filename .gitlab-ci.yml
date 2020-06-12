@@ -7,6 +7,7 @@ services:
 stages:
   - build
   - test
+  - deploy
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -49,3 +50,23 @@ test:
     - flake8 .
     - export DEBUG=0
     - python manage.py check --deploy --fail-level=WARNING
+
+deploy:
+  stage: deploy
+  script:
+    - export API_IMAGE=$IMAGE:api
+    - export NGINX_IMAGE=$IMAGE:nginx
+    - apk add --no-cache openssh-client bash
+    - chmod +x ./setup_env.sh
+    - bash ./setup_env.sh
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - mkdir -p ~/.ssh
+    - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - cat ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H 'gitlab.com' >> ~/.ssh/known_hosts
+    - chmod +x ./deploy.sh
+    - scp  -o StrictHostKeyChecking=no -r ./.env ./docker-compose.prod.yml ec2-user@$EC2_PUBLIC_IP_ADDRESS:/home/ec2-user/app
+    - bash ./deploy.sh

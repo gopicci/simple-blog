@@ -1,20 +1,19 @@
 version: '3.7'
 
 services:
-  blog-api:
-    container_name: blog-api
+  api:
+    container_name: api
     image: "${API_IMAGE}"
     command: gunicorn drf_project.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
     env_file:
-      - ./api/.env
+      - .env
 
-  blog-nginx:
-    container_name: blog-nginx
+  nginx:
+    container_name: nginx
     image: "${NGINX_IMAGE}"
     ports:
       - 80:80
     depends_on:
-      - blog-api
-      - blog-ui
+      - api
