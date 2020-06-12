@@ -5,6 +5,8 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile.prod
+      args:
+        SECRET_KEY: $SECRET_KEY
       cache_from:
         - "${API_IMAGE}"
     image: "${API_IMAGE}"
@@ -13,5 +15,3 @@ services:
       - 8000
     env_file:
       - .env
-    environment:
-      - SECRET_KEY: ${SECRET_KEY}
