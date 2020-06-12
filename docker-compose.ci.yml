@@ -14,4 +14,4 @@ services:
     env_file:
       - .env
     environment:
-      - SECRET_KEY
+      - SECRET_KEY: "test"
