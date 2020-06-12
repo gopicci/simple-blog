@@ -12,11 +12,11 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
+  IMAGE: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
+  API_IMAGE: $IMAGE:api
+  NGINX_IMAGE: $IMAGE:nginx
 
 before_script:
-    - export IMAGE=$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME
-    - export API_IMAGE=$IMAGE:api
-    - export NGINX_IMAGE=$IMAGE:nginx
     - apk add --no-cache openssh-client bash
     - chmod +x ./setup_env.sh
     - bash ./setup_env.sh
@@ -25,15 +25,15 @@ before_script:
 build:
   stage: build
   script:
-    - docker pull $IMAGE:api || true
-    - docker pull $IMAGE:nginx || true
+    - docker pull $API_IMAGE || true
+    - docker pull $NGINX_IMAGE || true
     - docker-compose -f docker-compose.ci.yml build
-    - docker push $IMAGE:api
-    - docker push $IMAGE:nginx
+    - docker push $API_IMAGE
+    - docker push $NGINX_IMAGE
 
 test:
   stage: test
-  image: $IMAGE:api
+  image: $API_IMAGE
   services:
     - postgres:latest
   variables:
