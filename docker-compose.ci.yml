@@ -16,6 +16,7 @@ services:
   nginx:
     build:
       context: ./nginx
+      dockerfile: Dockerfile.prod
       cache_from:
         - "${NGINX_IMAGE}"
     image: "${NGINX_IMAGE}"
