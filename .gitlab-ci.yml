@@ -7,7 +7,7 @@ services:
 
 stages:
   - build
-  - test
+
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -23,31 +23,6 @@ build:
     - apk add --no-cache bash
     - chmod +x ./setup_env.sh
     - bash ./setup_env.sh
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker pull $IMAGE:api || true
-    - docker pull $IMAGE:nginx || true
-    - docker-compose -f docker-compose.ci.yml build
-    - docker push $IMAGE:api
-    - docker push $IMAGE:nginx
+    - cat .env
+    - echo $SECRET_KEY
 
-test:
-  stage: test
-  image: $IMAGE:api
-  services:
-    - postgres:latest
-  variables:
-    POSTGRES_DB: users
-    POSTGRES_USER: runner
-    POSTGRES_PASSWORD: runner
-    DATABASE_TEST_URL: postgres://runner:runner@postgres:5432/users
-  script:
-    - python3.8 -m venv env
-    - source env/bin/activate
-    - pip install -r requirements.txt
-    - pip install flake8 isort pytest pytest-django
-    - export DEBUG=1
-    - pytest -p no:warnings
-    - flake8 .
-    - isort ./*/*.py --check-only
-    - export DEBUG=0
-    - python manage.py check --deploy --fail-level=WARNING
