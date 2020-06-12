@@ -10,4 +10,4 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "test"
+    - echo $PRIVATE_KEY
