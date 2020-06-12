@@ -31,9 +31,6 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBUG 0
-ARG SECRET_KEY
-ENV SECRET_KEY $SECRET_KEY
-RUN echo $SECRET_KEY
 ENV DJANGO_ALLOWED_HOSTS .amazonaws.com
 
 RUN apk update \
@@ -46,8 +43,6 @@ RUN pip install --no-cache /wheels/*
 
 COPY . /usr/src/app/
 
-RUN cat .env
-RUN echo $SECRET_KEY
 RUN python manage.py collectstatic --noinput
 
 RUN adduser -D simpleblog
