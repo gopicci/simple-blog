@@ -2,7 +2,7 @@
 
 echo DEBUG=0 >> .env
 echo USE_S3=TRUE >> .env
-echo DJANGO_ALLOWED_HOSTS=$EC2_PUBLIC_IP_ADDRESS >> .env
+echo DJANGO_ALLOWED_HOSTS=* >> .env
 echo SQL_ENGINE=django.db.backends.postgresql >> .env
 echo DATABASE=postgres >> .env
 
