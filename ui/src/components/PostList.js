@@ -10,7 +10,7 @@ function PostList() {
   const [postList, setPostList] = useState([]);
 
   useEffect(() => {
-    fetch("api/blog/")
+    fetch("/api/blog/")
       .then((res) => res.json())
       .then((res) => {
         setPostList(res);

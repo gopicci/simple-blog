@@ -15,7 +15,7 @@ function UserLogout({ currentUser, loginUpdate }) {
 
   const logout = async () => {
     let csrfToken = getCookie("csrftoken");
-    fetch("api/logout/", {
+    fetch("/api/logout/", {
       method: "post",
       headers: {
         Accept: "application/json, text/plain, */*",

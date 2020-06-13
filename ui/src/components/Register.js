@@ -20,7 +20,7 @@ function Register() {
     };
 
     let csrfToken = getCookie("csrftoken");
-    fetch("api/register/", {
+    fetch("/api/register/", {
       method: "post",
       headers: {
         Accept: "application/json, text/plain, */*",

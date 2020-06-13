@@ -26,7 +26,7 @@ function Create() {
     };
 
     let csrfToken = getCookie("csrftoken");
-    fetch("api/blog/", {
+    fetch("/api/blog/", {
       method: "post",
       headers: {
         Accept: "application/json, text/plain, */*",

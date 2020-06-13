@@ -89,7 +89,7 @@ function Login({ loginUpdate }) {
               size="sm"
             />
 
-            <Form.Group block>
+            <Form.Group>
               <Button
                 block
                 type="submit"
@@ -100,7 +100,7 @@ function Login({ loginUpdate }) {
                 Login
               </Button>
             </Form.Group>
-            <Form.Group block>
+            <Form.Group>
               <LinkContainer to="/register">
                 <Button
                   block

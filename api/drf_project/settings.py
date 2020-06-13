@@ -38,15 +38,12 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django.contrib.staticfiles",
     "rest_framework",
-    "corsheaders",
     "storages",
     "drf_yasg",
     "blog",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -161,6 +158,3 @@ SWAGGER_SETTINGS = {
     "LOGIN_URL": "/api/login",
     "LOGOUT_URL": "/api/logout",
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True

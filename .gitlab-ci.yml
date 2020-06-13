@@ -19,15 +19,18 @@ build:
   script:
     - export API_IMAGE=$IMAGE:api
     - export NGINX_IMAGE=$IMAGE:nginx
+    - export UI_IMAGE=$IMAGE:ui
     - apk add --no-cache openssh-client bash
     - chmod +x ./setup_env.sh
     - bash ./setup_env.sh
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $IMAGE:api || true
     - docker pull $IMAGE:nginx || true
+    - docker pull $IMAGE:ui || true
     - docker-compose -f docker-compose.ci.yml build
     - docker push $IMAGE:api
     - docker push $IMAGE:nginx
+    - docker push $IMAGE:ui
 
 test:
   stage: test
@@ -55,6 +58,7 @@ deploy:
   script:
     - export API_IMAGE=$IMAGE:api
     - export NGINX_IMAGE=$IMAGE:nginx
+    - export UI_IMAGE=$IMAGE:ui
     - apk add --no-cache openssh-client bash
     - chmod +x ./setup_env.sh
     - bash ./setup_env.sh

@@ -9,7 +9,6 @@ services:
       - 8000:8000
     env_file:
       - .env
-
   nginx:
     container_name: nginx
     image: "${NGINX_IMAGE}"
@@ -17,3 +16,12 @@ services:
       - 80:80
     depends_on:
       - api
+  ui:
+    container_name: ui
+    image: "${UI_IMAGE}"
+    command: npm start
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
+      - nginx
