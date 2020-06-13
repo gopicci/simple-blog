@@ -24,16 +24,3 @@ services:
       - 80:80
     depends_on:
       - api
-  ui:
-    build:
-      context: ./ui
-      dockerfile: Dockerfile.prod
-      cache_from:
-        - "${UI_IMAGE}"
-    image: "${UI_IMAGE}"
-    command: npm start
-    ports:
-      - 3000:3000
-    depends_on:
-      - api
-      - nginx

@@ -16,12 +16,3 @@ services:
       - 80:80
     depends_on:
       - api
-  ui:
-    container_name: ui
-    image: "${UI_IMAGE}"
-    command: npm start
-    ports:
-      - 3000:3000
-    depends_on:
-      - api
-      - nginx

@@ -19,7 +19,6 @@ echo AWS_STORAGE_BUCKET_NAME=$AWS_STORAGE_BUCKET_NAME >> .env
 
 echo API_IMAGE=$IMAGE:api  >> .env
 echo NGINX_IMAGE=$IMAGE:nginx  >> .env
-echo UI_IMAGE=$IMAGE:ui  >> .env
 echo CI_REGISTRY_USER=$CI_REGISTRY_USER   >> .env
 echo CI_JOB_TOKEN=$CI_JOB_TOKEN  >> .env
 echo CI_REGISTRY=$CI_REGISTRY  >> .env
