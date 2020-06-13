@@ -27,7 +27,6 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,12 +38,15 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "storages",
     "drf_yasg",
     "blog",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -159,3 +161,6 @@ SWAGGER_SETTINGS = {
     "LOGIN_URL": "/api/login",
     "LOGOUT_URL": "/api/logout",
 }
+
+CORS_ORIGIN_ALLOW_ALL = True # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
+CORS_ALLOW_CREDENTIALS = True
