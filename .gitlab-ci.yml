@@ -49,7 +49,6 @@ test:
     - pytest -p no:warnings
     - flake8 .
     - export DEBUG=0
-    - python manage.py check --deploy --fail-level=WARNING
 
 deploy:
   stage: deploy
