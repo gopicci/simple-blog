@@ -35,7 +35,7 @@ function PostListItem({ post }) {
             <h3>{post["title"]}</h3>
           </Card.Title>
           <Card.Text>
-            <span className="text-muted">
+            <span className="list-card-text text-muted">
               <LinesEllipsis
                 text={content}
                 maxLine="1"

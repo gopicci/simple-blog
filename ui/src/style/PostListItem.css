@@ -9,6 +9,10 @@
   margin-right: 5px;
 }
 
+.list-card-text {
+  white-space: pre-wrap;
+}
+
 .list-card {
   border-color: #eff1f3;
 }
