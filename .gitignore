@@ -3,7 +3,7 @@ env
 *.sqlite3
 notes
 .coverage
-.env
+.env*
 staticfiles
 mediafiles
 .idea
