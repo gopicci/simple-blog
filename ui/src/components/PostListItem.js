@@ -4,6 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import HTMLParser from "fast-html-parser";
 
 import { dateBuilder } from "../services/DateService";
+import LinesEllipsis from 'react-lines-ellipsis'
 
 import "../style/PostListItem.css";
 
@@ -34,7 +35,15 @@ function PostListItem({ post }) {
             <h3>{post["title"]}</h3>
           </Card.Title>
           <Card.Text>
-            <span className="list-card-text text-muted">{content}</span>
+            <span className="text-muted">
+              <LinesEllipsis
+                text={content}
+                maxLine="1"
+                ellipsis="..."
+                trimRight
+                basedOn="letters"
+              />
+            </span>
           </Card.Text>
           <Card.Text className="text-right">{tagList}</Card.Text>
         </Card.Body>
