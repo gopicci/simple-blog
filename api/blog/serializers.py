@@ -137,6 +137,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    """
+    Image serializer.
+    """
     class Meta:
         model = ImageModel
         fields = ("image",)

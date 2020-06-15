@@ -75,7 +75,7 @@ class RegisterView(generics.CreateAPIView):
 
 class UserView(generics.RetrieveAPIView):
     """
-    User detail view.
+    Logged in user detail view.
     """
 
     serializer_class = UserSerializer
@@ -97,7 +97,7 @@ class IsAuthor(permissions.BasePermission):
 
 class TagsView(generics.ListAPIView):
     """
-    Tags view.
+    Tags list view.
     """
 
     queryset = Tag.objects.all()
@@ -144,5 +144,8 @@ class CommentsView(generics.ListCreateAPIView):
 
 
 class ImageView(generics.CreateAPIView):
+    """
+    Image view, can post if authenticated.
+    """
     serializer_class = ImageSerializer
     permission_classes = (permissions.IsAuthenticated,)
